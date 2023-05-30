@@ -6,7 +6,6 @@ export default async function handler(req, res) {
     //TODO PROTEGER RUTAS
   try {
 
-
     const redeems = await getRedeems();
     res.status(200).json(redeems);
   } catch (error) {

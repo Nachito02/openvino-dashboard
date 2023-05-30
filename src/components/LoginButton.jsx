@@ -3,7 +3,8 @@ import Web3 from "web3";
 import { closeAlert, showAlert } from "@/redux/actions/alertActions";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
-
+import Image from "next/image";
+import { loginApp } from "@/redux/actions/winaryActions";
 const LoginButton = () => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -20,6 +21,7 @@ const LoginButton = () => {
         const accounts = await web3.eth.getAccounts();
         const address = accounts[0];
 
+          dispatch(loginApp(address))
         // Realizar acciones adicionales según sea necesario, como enviar la dirección a un servidor para autenticar al usuario
 
         // Establecer el estado de inicio de sesión como verdadero
@@ -28,18 +30,20 @@ const LoginButton = () => {
         console.error(error);
         // Manejar errores de inicio de sesión
         //    setError('No se puedo completar la autenticacion')
+        {/* TODO  ALERTAS EN INGLES*/}
+
         dispatch(
           showAlert("No se puedo completar la autenticacion intente nuevamente")
         );
       } finally {
         setIsLoading(false);
 
-
         setTimeout(() => {
-                dispatch(closeAlert())
-        }, 3000)
+          dispatch(closeAlert());
+        }, 3000);
       }
     } else {
+      {/* TODO  ALERTAS EN INGLES*/}
       dispatch(
         showAlert(
           "Metamask no está instalado o no se detectó el proveedor de Ethereum"
@@ -53,6 +57,11 @@ const LoginButton = () => {
       disabled={isLoading}
       onClick={loginWithMetamask}
       className={`border
+      flex
+      items-center
+      gap-2
+      text-white
+      bg-black
        border-pink-900
         hover:bg-pink-900
          hover:text-white
@@ -63,7 +72,7 @@ const LoginButton = () => {
            disabled:hover:bg-white
            `}
     >
-      Ingresar
+      <Image src='/assets/icon.svg' width={100} height={100} /> Ingresar con metamask
     </button>
   );
 };

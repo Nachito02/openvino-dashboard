@@ -24,6 +24,12 @@ const LoginButton = () => {
  
 
   const handleLogin = async () => {
+
+    if(!window.ethereum) {
+      dispatch(showAlert('No se detecto una billetera de metamask, por favor instale metamask y vuelva a intentarlo'))
+      return
+    }
+
     try {
       const callbackUrl = '/dashboard'
       if (accountData?.address) {
@@ -37,7 +43,9 @@ const LoginButton = () => {
       console.log(data.account)
       signIn('credentials', { address: data?.account, callbackUrl })
     } catch (error) {
-      window.alert(error)
+      dispatch(showAlert('Hubo un error en la autenticación, vuelve a intentarlo'))
+
+      
     }
   }
 

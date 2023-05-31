@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { verify } from "jsonwebtoken";
 import tokenVerify from "./pages/api/helpers/tokenVerify";
 export async function middleware(request) {
   //TODO PROTEGER RUTAS

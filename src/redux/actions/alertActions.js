@@ -6,6 +6,11 @@ export function showAlert(alertMessage) {
             type: SHOW_ALERT,
             payload: alertMessage
         })
+        setTimeout(() => {
+                dispatch({
+                    type:CLOSE_ALERT
+                })
+        }, 4000)    
     }
 }
 

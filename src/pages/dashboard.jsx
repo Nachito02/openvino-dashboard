@@ -5,7 +5,7 @@ import { useAccount } from 'wagmi'
 import { useRouter } from 'next/router'
 
 
-const dashboard = () => {
+const Dashboard = () => {
 
   const router = useRouter()
 
@@ -20,7 +20,7 @@ const dashboard = () => {
   )
 }
 
-export default dashboard
+export default Dashboard
 
 export async function getServerSideProps(context) {
   const session = await getSession(context)

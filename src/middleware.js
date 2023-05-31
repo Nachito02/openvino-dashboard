@@ -1,14 +1,17 @@
 import { NextResponse } from "next/server";
+import { verify } from "jsonwebtoken";
+import tokenVerify from "./pages/api/helpers/tokenVerify";
+export async function middleware(request) {
+  //TODO PROTEGER RUTAS
 
-export function middleware(request) {
+  if (request.url.includes("/dashboard") ) {
+  
+      const jwtoken = await tokenVerify(request)
 
-   //TODO PROTEGER RUTAS
-   // if(request.url.includes('redeemRoute')) {
-   //    if(!request.cookies.get('winary')) {
-   //     return  NextResponse.redirect(new URL('/' ,request.url))
-   //    }
-   // }
-
-
-   return NextResponse.next()
+    if (!jwtoken) {
+      console.log('no verificado')
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+  }
+  return NextResponse.next();
 }

@@ -1,23 +1,20 @@
-import { AUTH_WINARY, LOGIN_METAMASK } from "../types";
-import jwtGenerator from "../../../helpers/jwtGenerator";
 import clientAxios from "@/config/clientAxios";
+import { AUTH_WINARY, LOGIN_METAMASK } from "../types";
+ function loginApp(public_key) {
 
-
-export function loginApp(public_key) {
-
-        const token =  jwtGenerator(public_key)
-
+    
     return async (dispatch) => {
         try {
+          
+            const token = await jwtGenerator(public_key)
 
-                clientAxios.post('/login',token)
-
-            dispatch({
-                type: SHOW_ALERT,
-                payload: alertMessage
-            })
+            const response = await clientAxios.post('/loginRoute',{token})
+            
+            // const response = await clientAxios.post('/loginRoute', {public_key})
         }catch(error) {
             console.log(error.message)
         }
     }
 }
+
+export {loginApp}

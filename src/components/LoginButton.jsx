@@ -4,58 +4,47 @@ import { closeAlert, showAlert } from "@/redux/actions/alertActions";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { loginApp } from "@/redux/actions/winaryActions";
-const LoginButton = () => {
+
+// NextAuth.js signIn will help us create a session
+import { signIn } from 'next-auth/react'
+// hooks that allow to use metamask informations
+import { useConnect, useAccount } from 'wagmi'
+
+
+const LoginButton = () => { 
+  const router = useRouter()
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
-  const loginWithMetamask = async () => {
-    setIsLoading(true);
-    if (typeof window.ethereum !== "undefined") {
-      try {
-        // Solicitar al usuario que apruebe la conexión y acceda a su cuenta de Metamask
-        await window.ethereum.enable();
+  const [{ data: connectData }, connect] = useConnect()
+  const [{ data: accountData }] = useAccount()
+  const metamaskInstalled = connectData.connectors[0].name === 'MetaMask'
+ 
 
-        // Obtener la dirección de Ethereum del usuario y cualquier otra información necesaria
-        const web3 = new Web3(window.ethereum);
-        const accounts = await web3.eth.getAccounts();
-        const address = accounts[0];
-
-          dispatch(loginApp(address))
-        // Realizar acciones adicionales según sea necesario, como enviar la dirección a un servidor para autenticar al usuario
-
-        // Establecer el estado de inicio de sesión como verdadero
-        // setLoggedIn(true);
-      } catch (error) {
-        console.error(error);
-        // Manejar errores de inicio de sesión
-        //    setError('No se puedo completar la autenticacion')
-        {/* TODO  ALERTAS EN INGLES*/}
-
-        dispatch(
-          showAlert("No se puedo completar la autenticacion intente nuevamente")
-        );
-      } finally {
-        setIsLoading(false);
-
-        setTimeout(() => {
-          dispatch(closeAlert());
-        }, 3000);
+  const handleLogin = async () => {
+    try {
+      const callbackUrl = '/dashboard'
+      if (accountData?.address) {
+        signIn('credentials', { address: accountData.address, callbackUrl })
+        return
       }
-    } else {
-      {/* TODO  ALERTAS EN INGLES*/}
-      dispatch(
-        showAlert(
-          "Metamask no está instalado o no se detectó el proveedor de Ethereum"
-        )
-      );
+      const { data, error } = await connect(connectData.connectors[0])
+      if (error) {
+        throw error
+      }
+      console.log(data.account)
+      signIn('credentials', { address: data?.account, callbackUrl })
+    } catch (error) {
+      window.alert(error)
     }
-  };
+  }
 
   return (
     <button
       disabled={isLoading}
-      onClick={loginWithMetamask}
+      onClick={handleLogin}
       className={`border
       flex
       items-center

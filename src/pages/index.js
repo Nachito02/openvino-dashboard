@@ -4,7 +4,18 @@ import { useSelector } from 'react-redux';
 import LoginButton from '../components/LoginButton';
 import Image from 'next/image';
 import Head from 'next/head';
+
+import React from 'react'
+import { useSession, signOut, getSession } from 'next-auth/react'
+import { useEffect } from 'react'
+import { useAccount } from 'wagmi'
+import { useRouter } from 'next/router'
 export default function Home() {
+
+  
+  const [{ data: accountData }, disconnect] = useAccount()
+
+  const session = useSession()
 
   const alert = useSelector(state => state.alert.alert)
 
@@ -27,4 +38,22 @@ export default function Home() {
     </main>
     </>
   )
+}
+export async function getServerSideProps(context) {
+  const session = await getSession(context)
+
+  if(session) {
+    return {
+      redirect: {
+        destination:'/dashboard',
+        permanent: false
+      }
+    }
+  }
+
+  return {
+    props: {
+
+    }
+  }
 }

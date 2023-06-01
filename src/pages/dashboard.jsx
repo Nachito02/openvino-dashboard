@@ -1,42 +1,39 @@
-import React from 'react'
-import { useSession, signOut, getSession } from 'next-auth/react'
-import { useEffect } from 'react'
-import { useAccount } from 'wagmi'
-import { useRouter } from 'next/router'
+import { useSession, signOut, getSession } from "next-auth/react";
+import { useEffect } from "react";
+import { useAccount } from "wagmi";
+import { useRouter } from "next/router";
+import Sidebar from "@/components/Sidebar";
 
+const Dashboard = () => {
+  const router = useRouter();
 
-const dashboard = () => {
+  const [{ data: accountData }, disconnect] = useAccount();
 
-  const router = useRouter()
-
-  
-  const [{ data: accountData }, disconnect] = useAccount()
-
-  const session = useSession()
-
-   
+  const session = useSession();
+  console.log(session);
   return (
-    console.log(session)
-  )
-}
+    <>
+      <h1>DASHBOARD</h1>
+      <Sidebar />
+    </>
+  );
+};
 
-export default dashboard
+export default Dashboard;
 
 export async function getServerSideProps(context) {
-  const session = await getSession(context)
+  const session = await getSession(context);
 
-  if(!session) {
+  if (!session) {
     return {
       redirect: {
-        destination:'/',
-        permanent: false
-      }
-    }
+        destination: "/",
+        permanent: false,
+      },
+    };
   }
 
   return {
-    props: {
-
-    }
-  }
+    props: {},
+  };
 }
